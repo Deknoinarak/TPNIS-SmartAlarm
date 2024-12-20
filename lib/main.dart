@@ -69,30 +69,23 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            OutlinedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddAlarmPage()),
-                );
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.alarm_add_outlined,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      'เพิ่มการปลุก',
-                    )
-                  ],
-                ),
-              ),
-            ),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddAlarmPage()),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.alarm_add_outlined,
+                  ),
+                  label: Text(
+                    'เพิ่มการปลุก',
+                  )),
+            )
           ],
         ),
       ),
