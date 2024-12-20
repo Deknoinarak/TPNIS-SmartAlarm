@@ -103,7 +103,7 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
               TextButton(
                 onPressed: _showTimePicker,
                 child: Container(
-                  color: Colors.blueGrey,
+                  color: Colors.lightBlue,
                   padding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: const Text(
@@ -124,8 +124,8 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
                 children: [
                   Text("วันที่"),
                   Text(
-                    DateFormat('dd MMM yyyy', "th").format(selectedDate),
-                    style: TextStyle(fontSize: 38),
+                    DateFormat('EEE dd MMM yyyy', "th").format(selectedDate),
+                    style: TextStyle(fontSize: 32),
                   ),
                 ],
               ),
@@ -133,7 +133,7 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
               TextButton(
                 onPressed: _showDatePicker,
                 child: Container(
-                  color: Colors.blueGrey,
+                  color: Colors.lightBlue,
                   padding:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: const Text(
@@ -145,6 +145,36 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
             ],
           ),
         ]),
+      ),
+      bottomNavigationBar: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        child: BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              TextButton.icon(
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: Colors.red,
+                ),
+                label: Text(
+                  "ยกเลิก",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+                onPressed: () {},
+              ),
+              TextButton.icon(
+                icon: Icon(Icons.check),
+                label: Text(
+                  "บันทึก",
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
