@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final AlarmListManager _alarmService = AlarmListManager(widget.alarms);
+    final AlarmListManager alarmService = AlarmListManager(widget.alarms);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                     onPressed: () async {
-                      addAlarm(context, _alarmService);
+                      addAlarm(context, alarmService);
                     },
                     icon: Icon(
                       Icons.alarm_add_outlined,
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                       key: Key(alarm.id.toString()),
                       child: AlarmItemWidget(
                         alarm: alarm,
-                        alarmService: _alarmService,
+                        alarmService: alarmService,
                         alarms: widget.alarms,
                       ),
                     );
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void addAlarm(context, _alarmService) {
+  void addAlarm(context, alarmService) {
     TimeOfDay tod = TimeOfDay.fromDateTime(DateTime.now());
     final newAlarm = ObservableAlarm.dayList(
         widget.alarms.alarms.length,
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(
         builder: (context) => EditAlarmPage(
           alarm: newAlarm,
-          alarmService: _alarmService,
+          alarmService: alarmService,
           alarms: widget.alarms,
         ),
       ),

@@ -134,6 +134,7 @@ abstract class ObservableAlarmBase with Store {
   }
 
   // Good enough for debugging for now
+  @override
   toString() {
     return "active: $active";
   }

@@ -5,6 +5,7 @@ import 'package:tpnisalarm/services/alarm_list_service.dart';
 import 'package:tpnisalarm/services/alarm_scheduler_service.dart';
 import 'package:tpnisalarm/stores/alarm_list/alarm_list.dart';
 import 'package:tpnisalarm/stores/observable_alarm/observable_alarm.dart';
+import 'package:tpnisalarm/widgets/repeat_selector.dart';
 
 class EditAlarmPage extends StatefulWidget {
   const EditAlarmPage(
@@ -139,35 +140,11 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
             ],
           ),
           SizedBox(
-            height: 6,
+            height: 12,
           ),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("วันที่"),
-                  Text(
-                    DateFormat('EEE dd MMM yyyy', "th").format(selectedDate),
-                    style: TextStyle(fontSize: 32),
-                  ),
-                ],
-              ),
-              Spacer(),
-              TextButton(
-                onPressed: _showDatePicker,
-                child: Container(
-                  color: Colors.lightBlue,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: const Text(
-                    'เลือกวันปลุก',
-                    style: TextStyle(color: Colors.white, fontSize: 13.0),
-                  ),
-                ),
-              )
-            ],
-          ),
+          RepeatSelectorWidget(
+            alarm: widget.alarm,
+          )
         ]),
       ),
       bottomNavigationBar: AnimatedContainer(

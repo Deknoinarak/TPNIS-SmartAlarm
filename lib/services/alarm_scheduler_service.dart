@@ -50,9 +50,11 @@ class AlarmScheduler {
             checkedDay.day, alarm.hour!, alarm.minute!);
 
         if (targetDateTime.millisecondsSinceEpoch <
-            checkedDay.millisecondsSinceEpoch) // Time past?
+            checkedDay.millisecondsSinceEpoch) {
+          // Time past?
           targetDateTime =
               targetDateTime.add(Duration(days: 1)); // Prepare for next day
+        }
 
         debugPrint("targetDateTime ${targetDateTime.toString()}");
         await newShot(targetDateTime, scheduleId + i);
@@ -100,9 +102,9 @@ class AlarmScheduler {
   static void createAlarmFlag(int id) async {
     debugPrint('Creating a new alarm flag for ID $id');
     final dir = await getApplicationDocumentsDirectory();
-    JsonFileService.toFile(File(dir.path + "/$id.alarm")).writeList([]);
+    JsonFileService.toFile(File("${dir.path}/$id.alarm")).writeList([]);
 
-    final alarms = await new JsonFileService().readList();
+    final alarms = await JsonFileService().readList();
     var alarm = alarms.firstWhere((element) => element.id == id);
 
     if (alarm.active! && Platform.isAndroid) {

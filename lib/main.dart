@@ -22,7 +22,7 @@ Future<void> main() async {
   // needed if you intend to initialize in the `main` function
   WidgetsFlutterBinding.ensureInitialized();
 
-  final alarms = await new JsonFileService().readList();
+  final alarms = await JsonFileService().readList();
   list.setAlarms(alarms);
 
   await AndroidAlarmManager.initialize();

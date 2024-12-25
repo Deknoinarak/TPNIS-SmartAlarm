@@ -144,8 +144,9 @@ class ScheduleNotifications with HandleError {
     if (title != null) _title = title;
     if (body != null) _body = body;
     if (payload != null) _payload = payload;
-    if (androidAllowWhileIdle != null)
+    if (androidAllowWhileIdle != null) {
       _androidAllowWhileIdle = androidAllowWhileIdle;
+    }
     if (icon != null) _icon = icon;
     if (importance != null) _importance = importance;
     if (priority != null) _priority = priority;
@@ -375,7 +376,7 @@ class ScheduleNotifications with HandleError {
     int? badgeNumber,
   ) {
     //
-    NotificationDetails? notificationSpecifics = null;
+    NotificationDetails? notificationSpecifics;
 
     // Failed to initialized.
     if (!_init) {
