@@ -1,9 +1,39 @@
-import 'package:flutter/material.dart';
-import 'package:tpnisalarm/addalarm.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'dart:async';
 
-void main() {
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tpnisalarm/home.dart';
+import 'package:tpnisalarm/services/json_file_service.dart';
+import 'package:tpnisalarm/stores/alarm_list/alarm_list.dart';
+import 'package:tpnisalarm/utils/schedule_notifications.dart';
+
+AlarmList list = AlarmList();
+NotificationAppLaunchDetails? notificationAppLaunchDetails;
+ScheduleNotifications notifications = ScheduleNotifications(
+    'clockee_notification',
+    'Clockee Alarm Notication',
+    'Alerts on scheduled alarm events',
+    appIcon: 'notification_logo');
+
+Future<void> main() async {
+  // needed if you intend to initialize in the `main` function
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final alarms = await new JsonFileService().readList();
+  list.setAlarms(alarms);
+
+  await AndroidAlarmManager.initialize();
+
+  FlutterForegroundTask.initCommunicationPort();
+
   runApp(const MyApp());
+}
+
+void restartApp() {
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,80 +45,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'WakeNa',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
           fontFamily: 'Line Seed Sans TH'),
-      home: const MyHomePage(title: 'WakeNa'),
+      home: HomePage(alarms: list),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
       supportedLocales: [const Locale('th')],
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddAlarmPage()),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.alarm_add_outlined,
-                  ),
-                  label: Text(
-                    'เพิ่มการปลุก',
-                  )),
-            )
-          ],
-        ),
-      ),
     );
   }
 }

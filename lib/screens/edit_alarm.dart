@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:tpnisalarm/services/alarm_list_service.dart';
+import 'package:tpnisalarm/services/alarm_scheduler_service.dart';
+import 'package:tpnisalarm/stores/alarm_list/alarm_list.dart';
+import 'package:tpnisalarm/stores/observable_alarm/observable_alarm.dart';
 
-class AddAlarmPage extends StatefulWidget {
-  const AddAlarmPage({super.key});
+class EditAlarmPage extends StatefulWidget {
+  const EditAlarmPage(
+      {super.key,
+      required this.alarm,
+      required this.alarmService,
+      required this.alarms});
+
+  final ObservableAlarm alarm;
+  final AlarmListManager alarmService;
+  final AlarmList alarms;
 
   @override
-  State<AddAlarmPage> createState() => _AddAlarmPageState();
+  State<EditAlarmPage> createState() => _EditAlarmPageState();
 }
 
-class _AddAlarmPageState extends State<AddAlarmPage> {
+class _EditAlarmPageState extends State<EditAlarmPage> {
   final nameController = TextEditingController();
 
   @override
@@ -22,7 +35,7 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
   DateTime selectedDate = DateTime.now();
 
   Future<void> _showTimePicker() async {
-    final TimeOfDay? timeOfDay = await showTimePicker(
+    final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: selectedTime,
         initialEntryMode: TimePickerEntryMode.dial,
@@ -32,10 +45,9 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
                   MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
               child: child!);
         });
-    if (timeOfDay != null) {
-      setState(() {
-        selectedTime = timeOfDay;
-      });
+    if (time != null) {
+      widget.alarm.hour = time.hour;
+      widget.alarm.minute = time.minute;
     }
   }
 
@@ -62,17 +74,20 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('เพิ่มการปลุก'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            tooltip: 'บันทึก',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('กำลังบันทึก...')));
+        leading: IconButton(
+          icon: IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () async {
+              await saveAlarm();
             },
           ),
-        ],
+          tooltip: 'บันทึก',
+          onPressed: () {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('กำลังบันทึก...')));
+          },
+        ),
+        title: const Text('ตั้งค่าการปลุก'),
       ),
       body: Container(
         padding: const EdgeInsets.all(16),
@@ -93,10 +108,19 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("เวลา"),
-                  Text(
-                    "${selectedTime.hour}:${selectedTime.minute}",
-                    style: TextStyle(fontSize: 42),
-                  ),
+                  // Text(
+                  //   "${selectedTime.hour}:${selectedTime.minute}",
+                  //   style: TextStyle(fontSize: 42),
+                  // ),
+                  Observer(builder: (context) {
+                    final hours = widget.alarm.hour.toString().padLeft(2, '0');
+                    final minutes =
+                        widget.alarm.minute.toString().padLeft(2, '0');
+                    return Text('$hours:$minutes',
+                        style: TextStyle(
+                          fontSize: 42,
+                        ));
+                  })
                 ],
               ),
               Spacer(),
@@ -158,24 +182,40 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
                   color: Colors.red,
                 ),
                 label: Text(
-                  "ยกเลิก",
+                  "ลบ",
                   style: TextStyle(
                     color: Colors.red,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  deleteAlarm();
+                },
               ),
               TextButton.icon(
                 icon: Icon(Icons.check),
                 label: Text(
                   "บันทึก",
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  await saveAlarm();
+                },
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> saveAlarm() async {
+    await widget.alarmService.saveAlarm(widget.alarm);
+    await AlarmScheduler().scheduleAlarm(widget.alarm);
+    Navigator.of(context).pop();
+  }
+
+  void deleteAlarm() {
+    AlarmScheduler().clearAlarm(widget.alarm);
+    widget.alarms.alarms.removeAt(widget.alarms.alarms.length - 1);
+    Navigator.of(context).pop();
   }
 }
