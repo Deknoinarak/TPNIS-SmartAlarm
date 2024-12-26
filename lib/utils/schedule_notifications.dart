@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -75,6 +74,8 @@ class ScheduleNotifications with HandleError {
   bool? _defaultPresentSound;
   bool? _defaultPresentBadge;
   DidReceiveLocalNotificationCallback? _onDidReceiveLocalNotification;
+  DidReceiveBackgroundNotificationResponseCallback?
+      _onDidReceiveBackgroundNotificationResponse;
   bool? _presentAlert;
   bool? _presentSound;
   bool? _presentBadge;
@@ -128,6 +129,8 @@ class ScheduleNotifications with HandleError {
     bool? defaultPresentSound,
     bool? defaultPresentBadge,
     DidReceiveLocalNotificationCallback? onDidReceiveLocalNotification,
+    DidReceiveBackgroundNotificationResponseCallback?
+        onDidReceiveBackgroundNotificationResponse,
     bool? presentAlert,
     bool? presentSound,
     bool? presentBadge,
@@ -186,6 +189,8 @@ class ScheduleNotifications with HandleError {
     defaultPresentSound ??= _defaultPresentSound;
     defaultPresentBadge ??= _defaultPresentBadge;
     onDidReceiveLocalNotification ??= _onDidReceiveLocalNotification;
+    onDidReceiveBackgroundNotificationResponse ??=
+        _onDidReceiveBackgroundNotificationResponse;
     if (presentAlert != null) _presentAlert = presentAlert;
     if (presentSound != null) _presentSound = presentSound;
     if (presentBadge != null) _presentBadge = presentBadge;
@@ -195,14 +200,16 @@ class ScheduleNotifications with HandleError {
     //
     try {
       var initializationSettings = InitializationSettings(
-        android: AndroidInitializationSettings(_appIcon ?? ""),
+        android: AndroidInitializationSettings(_appIcon ?? "app_icon"),
       );
 
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
       _init = (await _flutterLocalNotificationsPlugin!.initialize(
           initializationSettings,
-          onDidReceiveNotificationResponse: onSelectNotification))!;
+          onDidReceiveNotificationResponse: onSelectNotification,
+          onDidReceiveBackgroundNotificationResponse:
+              onDidReceiveBackgroundNotificationResponse))!;
     } catch (ex) {
       getError(ex);
       _init = false;
@@ -223,7 +230,7 @@ class ScheduleNotifications with HandleError {
   bool _init = false;
   bool get initialized => _init;
 
-  int? show({
+  Future<int?> show({
     int? id,
     String? title,
     String? body,
@@ -265,7 +272,7 @@ class ScheduleNotifications with HandleError {
     bool? presentBadge,
     String? soundFile,
     int? badgeNumber,
-  }) {
+  }) async {
     //
     var notificationSpecifics = _notificationDetails(
       title,
@@ -318,7 +325,9 @@ class ScheduleNotifications with HandleError {
         //
         if (id == null || id < 0) id = Random().nextInt(999);
 
-        _flutterLocalNotificationsPlugin!.show(
+        debugPrint('Display Notification');
+
+        await _flutterLocalNotificationsPlugin!.show(
           id,
           title,
           body,
@@ -326,6 +335,7 @@ class ScheduleNotifications with HandleError {
           payload: payload,
         );
       } catch (ex) {
+        debugPrint('$ex');
         id = -1;
         getError(ex);
       }
@@ -447,12 +457,13 @@ class ScheduleNotifications with HandleError {
 
     try {
       androidSettings = AndroidNotificationDetails(
-        channelId ?? "",
-        channelName ?? "",
-        channelDescription: channelDescription ?? "",
-        icon: icon,
-        importance: importance ?? Importance.defaultImportance,
-        priority: priority ?? Priority.defaultPriority,
+        channelId ?? "wakena_alarm",
+        channelName ?? "WakeNa Alarm",
+        channelDescription:
+            channelDescription ?? "Display WakeNa's Alarm Notification.",
+        icon: icon ?? "app_icon",
+        importance: importance ?? Importance.max,
+        priority: priority ?? Priority.high,
         styleInformation: styleInformation,
         playSound: playSound ?? true,
         sound: sound,
@@ -477,7 +488,7 @@ class ScheduleNotifications with HandleError {
         ledColor: ledColor,
         ledOnMs: ledOnMs,
         ledOffMs: ledOffMs,
-        ticker: ticker,
+        ticker: ticker ?? "ticker",
         visibility: visibility,
         timeoutAfter: timeoutAfter,
         category: category,

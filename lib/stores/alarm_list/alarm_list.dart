@@ -16,4 +16,9 @@ abstract class _AlarmList with Store {
     this.alarms.clear();
     this.alarms.addAll(alarms);
   }
+
+  @action
+  void removeAlarm(ObservableAlarm alarm) {
+    alarms.removeWhere((x) => x == alarm);
+  }
 }

@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tpnisalarm/stores/alarm_status/alarm_status.dart';
 
 class AlarmPollingWorker {
-  static AlarmPollingWorker _instance = AlarmPollingWorker._();
+  static final AlarmPollingWorker _instance = AlarmPollingWorker._();
 
   factory AlarmPollingWorker() {
     return _instance;

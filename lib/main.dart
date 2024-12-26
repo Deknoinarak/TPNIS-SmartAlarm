@@ -15,14 +15,22 @@ import 'package:tpnisalarm/stores/alarm_list/alarm_list.dart';
 import 'package:tpnisalarm/stores/alarm_status/alarm_status.dart';
 import 'package:tpnisalarm/stores/observable_alarm/observable_alarm.dart';
 import 'package:tpnisalarm/utils/schedule_notifications.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 AlarmList list = AlarmList();
 NotificationAppLaunchDetails? notificationAppLaunchDetails;
 ScheduleNotifications notifications = ScheduleNotifications(
-    'clockee_notification',
-    'Clockee Alarm Notication',
+    'wakena_notification',
+    'WakeNa Alarm Notication',
     'Alerts on scheduled alarm events',
-    appIcon: 'notification_logo');
+    appIcon: 'app_icon');
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  // handle action
+  debugPrint('notification payload $notificationResponse');
+  throw Exception('New Notification');
+}
 
 Future<void> main() async {
   // needed if you intend to initialize in the `main` function
@@ -67,7 +75,7 @@ class MyApp extends StatelessWidget {
               orElse: () => ObservableAlarm());
 
           // mediaHandler.playMusic(alarm);
-          // Wakelock.enable();
+          WakelockPlus.enable();
 
           return Material(child: RingScreen(alarm: alarm));
         }

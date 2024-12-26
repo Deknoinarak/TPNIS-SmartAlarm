@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
 import 'package:tpnisalarm/services/alarm_list_service.dart';
 import 'package:tpnisalarm/services/alarm_scheduler_service.dart';
 import 'package:tpnisalarm/stores/alarm_list/alarm_list.dart';
@@ -33,12 +32,12 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
   }
 
   TimeOfDay selectedTime = TimeOfDay.now();
-  DateTime selectedDate = DateTime.now();
 
   Future<void> _showTimePicker() async {
     final TimeOfDay? time = await showTimePicker(
         context: context,
-        initialTime: selectedTime,
+        initialTime:
+            TimeOfDay(hour: widget.alarm.hour!, minute: widget.alarm.minute!),
         initialEntryMode: TimePickerEntryMode.dial,
         builder: (context, child) {
           return MediaQuery(
@@ -52,23 +51,14 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
     }
   }
 
-  Future<void> _showDatePicker() async {
-    final DateTime? dateTime = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime.now(),
-        locale: const Locale("th", "TH"),
-        lastDate: DateTime(2100));
-    if (dateTime != null) {
-      setState(() {
-        selectedDate = dateTime;
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
+    debugPrint('Edit ID: ${widget.alarm.id}');
+    setState(() {
+      selectedTime =
+          TimeOfDay(hour: widget.alarm.hour!, minute: widget.alarm.minute!);
+    });
   }
 
   @override
@@ -192,7 +182,7 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
 
   void deleteAlarm() {
     AlarmScheduler().clearAlarm(widget.alarm);
-    widget.alarms.alarms.removeAt(widget.alarms.alarms.length - 1);
+    widget.alarms.removeAlarm(widget.alarm);
     Navigator.of(context).pop();
   }
 }
