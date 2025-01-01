@@ -74,9 +74,9 @@ class _AlarmItemWidgetState extends State<AlarmItemWidget> {
                   Row(
                     children: [
                       Switch(
-                          value: enable,
+                          value: widget.alarm.active!,
                           onChanged: (bool value) => setState(() {
-                                enable = value;
+                                widget.alarm.active = !widget.alarm.active!;
                               }))
                     ],
                   )

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:tpnisalarm/screens/select_captcha.dart';
 import 'package:tpnisalarm/services/alarm_list_service.dart';
 import 'package:tpnisalarm/services/alarm_scheduler_service.dart';
 import 'package:tpnisalarm/stores/alarm_list/alarm_list.dart';
 import 'package:tpnisalarm/stores/observable_alarm/observable_alarm.dart';
+import 'package:tpnisalarm/utils/captchas.dart';
 import 'package:tpnisalarm/widgets/repeat_selector.dart';
 
 class EditAlarmPage extends StatefulWidget {
@@ -84,11 +86,12 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
         padding: const EdgeInsets.all(16),
         child: Column(children: [
           TextFormField(
-            controller: nameController..text = "นาฬิกาปลุก",
+            controller: TextEditingController(text: widget.alarm.name),
             decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 suffixIcon: Icon(Icons.edit_outlined)),
             style: TextStyle(fontSize: 24),
+            onChanged: (newName) => widget.alarm.name = newName,
           ),
           SizedBox(
             height: 16,
@@ -134,7 +137,66 @@ class _EditAlarmPageState extends State<EditAlarmPage> {
           ),
           RepeatSelectorWidget(
             alarm: widget.alarm,
-          )
+          ),
+          SizedBox(
+            height: 24,
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: 100,
+            child: Card.outlined(
+              clipBehavior: Clip.hardEdge,
+              child: InkWell(
+                onTap: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SelectCaptchaPage(
+                        alarm: widget.alarm,
+                      ),
+                    ),
+                  )
+                },
+                child: Container(
+                  // color: Colors.lightBlue,
+                  padding: const EdgeInsets.all(6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Observer(builder: (context) {
+                        final icon = CaptchasList()
+                            .getCaptchaFromId(widget.alarm.captcha!)
+                            .icon;
+                        return SizedBox(width: 100, height: 100, child: icon);
+                      }),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'เลือกกิจกรรม',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Observer(builder: (context) {
+                            final name = CaptchasList()
+                                .getCaptchaFromId(widget.alarm.captcha!)
+                                .name;
+                            return Text(
+                              name,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            );
+                          }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ]),
       ),
       bottomNavigationBar: AnimatedContainer(

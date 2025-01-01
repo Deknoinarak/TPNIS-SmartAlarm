@@ -39,6 +39,17 @@ mixin _$AlarmList on _AlarmList, Store {
   }
 
   @override
+  void removeAlarm(ObservableAlarm alarm) {
+    final _$actionInfo = _$_AlarmListActionController.startAction(
+        name: '_AlarmList.removeAlarm');
+    try {
+      return super.removeAlarm(alarm);
+    } finally {
+      _$_AlarmListActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 alarms: ${alarms}

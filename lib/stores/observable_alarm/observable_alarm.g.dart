@@ -21,6 +21,7 @@ ObservableAlarm _$ObservableAlarmFromJson(Map<String, dynamic> json) =>
       sunday: json['sunday'],
       volume: json['volume'],
       progressiveVolume: json['progressiveVolume'],
+      captcha: json['captcha'],
       active: json['active'],
     );
 
@@ -39,6 +40,7 @@ Map<String, dynamic> _$ObservableAlarmToJson(ObservableAlarm instance) =>
       'sunday': instance.sunday,
       'volume': instance.volume,
       'progressiveVolume': instance.progressiveVolume,
+      'captcha': instance.captcha,
       'active': instance.active,
     };
 
@@ -241,6 +243,22 @@ mixin _$ObservableAlarm on ObservableAlarmBase, Store {
     });
   }
 
+  late final _$captchaAtom =
+      Atom(name: 'ObservableAlarmBase.captcha', context: context);
+
+  @override
+  String? get captcha {
+    _$captchaAtom.reportRead();
+    return super.captcha;
+  }
+
+  @override
+  set captcha(String? value) {
+    _$captchaAtom.reportWrite(value, super.captcha, () {
+      super.captcha = value;
+    });
+  }
+
   late final _$activeAtom =
       Atom(name: 'ObservableAlarmBase.active', context: context);
 
@@ -272,6 +290,7 @@ saturday: ${saturday},
 sunday: ${sunday},
 volume: ${volume},
 progressiveVolume: ${progressiveVolume},
+captcha: ${captcha},
 active: ${active}
     ''';
   }

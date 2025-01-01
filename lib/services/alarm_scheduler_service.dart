@@ -109,52 +109,47 @@ class AlarmScheduler {
 
     if (alarm.active! && Platform.isAndroid) {
       restartApp();
-      Timer(Duration(seconds: 5), () {
-        FlutterForegroundTask.launchApp();
-      });
+      FlutterForegroundTask.launchApp();
       debugPrint('Launched App');
 
-      final hours = alarm.hour.toString().padLeft(2, '0');
-      final minutes = alarm.minute.toString().padLeft(2, '0');
+      // await notifications.init(
+      //     onSelectNotification:
+      //         (NotificationResponse? notificationResponse) async {
+      //       // if (payload == null || payload.trim().isEmpty) return null;
+      //       final String? payload = notificationResponse!.payload;
+      //       debugPrint('  payload $payload');
 
-      await notifications.init(
-          onSelectNotification:
-              (NotificationResponse? notificationResponse) async {
-            // if (payload == null || payload.trim().isEmpty) return null;
-            final String? payload = notificationResponse!.payload;
-            debugPrint('  payload $payload');
+      //       // if (notificationResponse.payload != null) {
+      //       //   debugPrint('notification payload: $payload');
+      //       // }
+      //       // await Navigator.push(
+      //       //   context,
+      //       //   MaterialPageRoute<void>(
+      //       //       builder: (context) => SecondScreen(payload)),
+      //       // );
+      //       throw Exception('New Notification');
 
-            // if (notificationResponse.payload != null) {
-            //   debugPrint('notification payload: $payload');
-            // }
-            // await Navigator.push(
-            //   context,
-            //   MaterialPageRoute<void>(
-            //       builder: (context) => SecondScreen(payload)),
-            // );
-            throw Exception('New Notification');
+      //       // return;
+      //     },
+      //     onDidReceiveBackgroundNotificationResponse:
+      //         notificationTapBackground);
 
-            // return;
-          },
-          onDidReceiveBackgroundNotificationResponse:
-              notificationTapBackground);
+      // await notifications.getNotificationAppLaunchDetails().then((details) {
+      //   notificationAppLaunchDetails = details;
+      // });
 
-      await notifications.getNotificationAppLaunchDetails().then((details) {
-        notificationAppLaunchDetails = details;
-      });
-
-      await notifications.show(
-        id: id,
-        icon: 'app_icon',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker',
-        title: alarm.name,
-        // '$hours:$minutes'
-        body: "กดเพื่อหยุด",
-        sound: RawResourceAndroidNotificationSound(''),
-        payload: id.toString(),
-      );
+      // await notifications.show(
+      //   id: id,
+      //   icon: 'app_icon',
+      //   importance: Importance.max,
+      //   priority: Priority.high,
+      //   ticker: 'ticker',
+      //   title: alarm.name,
+      //   // '$hours:$minutes'
+      //   body: "กดเพื่อหยุด",
+      //   sound: RawResourceAndroidNotificationSound(''),
+      //   payload: id.toString(),
+      // );
 
       return;
     }

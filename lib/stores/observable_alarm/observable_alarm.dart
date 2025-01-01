@@ -19,6 +19,7 @@ class ObservableAlarm extends ObservableAlarmBase with _$ObservableAlarm {
       sunday,
       volume,
       progressiveVolume,
+      captcha,
       active})
       : super(
             id: id,
@@ -34,10 +35,11 @@ class ObservableAlarm extends ObservableAlarmBase with _$ObservableAlarm {
             sunday: sunday,
             volume: volume,
             progressiveVolume: progressiveVolume,
+            captcha: captcha,
             active: active);
 
-  ObservableAlarm.dayList(
-      id, name, hour, minute, volume, progressiveVolume, active, weekdays)
+  ObservableAlarm.dayList(id, name, hour, minute, volume, progressiveVolume,
+      captcha, active, weekdays)
       : super(
           id: id,
           name: name,
@@ -45,6 +47,7 @@ class ObservableAlarm extends ObservableAlarmBase with _$ObservableAlarm {
           minute: minute,
           volume: volume,
           progressiveVolume: progressiveVolume,
+          captcha: captcha,
           active: active,
           monday: weekdays[0],
           tuesday: weekdays[1],
@@ -101,6 +104,9 @@ abstract class ObservableAlarmBase with Store {
   bool? progressiveVolume = false;
 
   @observable
+  String? captcha = "";
+
+  @observable
   bool? active = false;
 
   @observable
@@ -118,6 +124,7 @@ abstract class ObservableAlarmBase with Store {
     this.sunday,
     this.volume,
     this.progressiveVolume,
+    this.captcha,
     this.active,
   });
 
