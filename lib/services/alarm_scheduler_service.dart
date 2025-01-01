@@ -4,7 +4,6 @@ import 'dart:io';
 // import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tpnisalarm/services/json_file_service.dart';
 import 'package:tpnisalarm/stores/observable_alarm/observable_alarm.dart';
